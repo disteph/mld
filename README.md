@@ -30,7 +30,8 @@ will turn into the following module structure
 In the background: an mlpack is automatically generated for each directory *.mld, and the -for-pack options are automatically generated.
 
 -------
-Directory visibility:
+### Directory visibility:
+
 All directories scanned for Foo's contents (i.e. src/foo.mld, src/foo.mld/a, src/foo.mld/a/c) can see each other, as if they were flattened.
 So D and E can refer to each other (in a non-circular way).
 On the other hand they cannot see the contents of bar.mld: module B will be unknown to them, but they can instead refer to Bar.B.
@@ -83,7 +84,9 @@ let () = Ocamlbuild_plugin.dispatch Mld.dispatch
 ```
 or if you already have another dispatch function (provided by e.g. oasis)
 ```
-let () = Ocamlbuild_plugin.dispatch (MyOCamlbuildBase.dispatch_combine [ other_dispatch ; Mld.dispatch ])
+let () = Ocamlbuild_plugin.dispatch
+             (MyOCamlbuildBase.dispatch_combine
+                 [ other_dispatch ; Mld.dispatch ])
 ```
 
 Then when calling ocamlbuild, you need to indicate that Findlib's package mld should be used, e.g.
@@ -99,3 +102,8 @@ OCamlVersion:           >= 4.03
 AlphaFeatures:          ocamlbuild_more_args
 XOCamlbuildPluginTags:  package(mld)
 ```
+
+-------
+### License
+
+This package is distributed under the terms of the [CeCIll-C License] (http://www.cecill.info/licences/Licence_CeCILL-C_V1-en.html).
