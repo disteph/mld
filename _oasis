@@ -1,0 +1,15 @@
+OASISFormat: 0.4
+Name:        MLD
+Version: 0.1
+Synopsis: The MLD package makes directory foo.mld turn into module Foo
+Authors: Stephane Graham-Lengrand
+License:     CeCILL-C
+LicenseFile: LICENCE.txt
+BuildTools:  ocamlbuild
+Plugins:     META (0.4)
+
+Library mld
+  Path:        src
+  Modules:     Mld
+  BuildDepends: str, ocamlbuild
+  XMETADescription: MLD library

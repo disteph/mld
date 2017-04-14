@@ -1,0 +1,12 @@
+# OASIS_START
+# DO NOT EDIT (digest: 531df64aacc87dcf991b5137ca8b559a)
+version = "0.9"
+description = "MLD library"
+requires = "str ocamlbuild"
+archive(byte) = "mld.cma"
+archive(byte, plugin) = "mld.cma"
+archive(native) = "mld.cmxa"
+archive(native, plugin) = "mld.cmxs"
+exists_if = "mld.cma"
+# OASIS_STOP
+
