@@ -8,6 +8,26 @@ let print_info f =
 let concat a b = Pathname.normalize(Pathname.concat a b)
 let parent_dir dir = concat dir (Pathname.parent "")
 
+let scan4tag tag path =
+  path |> tags_of_pathname |> (Tags.mem tag)
+                                
+let tag_regexp tag =
+  Str.regexp (Printf.sprintf "%s\\((\\([^)]*\\))\\)?$" tag)
+
+let rec scan4ptag ptag path =
+  let aux tag sofar = 
+    if not @@ Str.string_match (tag_regexp ptag) tag 0
+    then sofar
+    else
+      try (Str.matched_group 2 tag)::sofar
+      with Not_found ->
+        Printf.sprintf
+          "The %s tag requires an argument"
+          ptag
+        |> failwith
+  in
+  List.fold_right aux (path |> tags_of_pathname |> Tags.elements) []
+
 let rec guess maindir path accu =
   (* print_endline("Guessing "^path); *)
   if Pathname.is_prefix path maindir
@@ -90,31 +110,18 @@ let ml_rule env build =
     in
     
     let mlstring,deps,ctx  = treat_dir (Pathname.basename dir) ([],[],[]) in
-    mk_all_visible (Pathname.include_dirs_of here) ctx;
+    let inherited =
+      if scan4tag "blind" mld
+      then []
+      else Pathname.include_dirs_of here
+    in
+    mk_all_visible inherited ctx;
     List.iter Outcome.ignore_good(build deps);
 
     Echo(mlstring,ml)
   with
     _ -> raise Ocamlbuild_pack.Rule.Failed
 
-let scan4tag = Tags.mem
-  
-let tag_regexp tag =
-  Str.regexp (Printf.sprintf "%s\\((\\([^)]*\\))\\)?$" tag)
-
-let rec scan4ptag ptag path =
-  let aux tag sofar = 
-    if not @@ Str.string_match (tag_regexp ptag) tag 0
-    then sofar
-    else
-      try (Str.matched_group 2 tag)::sofar
-      with Not_found ->
-           Printf.sprintf
-             "The %s tag requires an argument"
-             ptag
-           |> failwith
-  in
-  List.fold_right aux (path |> tags_of_pathname |> Tags.elements) []
 
       
 let visible_rule env build =
@@ -130,6 +137,10 @@ let visible_rule env build =
       (* print_endline("Making "^visible^" visible to "^dir); *)
   in
   List.iter aux (scan4ptag "visible" dir);
+  let invisible = scan4ptag "invisible" dir in
+  let aux path  = not(List.mem path invisible) in
+  let include_dirs = List.filter aux (Pathname.include_dirs_of dir) in
+  Pathname.define_context dir include_dirs;
   raise Ocamlbuild_pack.Rule.Failed
   
 
@@ -138,8 +149,12 @@ let dispatch = function
      (* This is just to silence the warnings "Tag ... not used"
         declared as tags of "silent" *)
      List.iter mark_tag_used ("silent" |> tags_of_pathname |> Tags.elements);
-     (* This is just to silence all warnings "Tag visible(...) not used" *)
+     (* Never raise warning for tag "blind" *)
+     mark_tag_used "blind";
+     (* This is just to silence all warnings
+        "Tag visible(...) not used" and "Tag invisible(...) not used" *)
      pflag [] "visible" (fun _ -> N);
+     pflag [] "invisible" (fun _ -> N);
      rule "mld -> mlpack" ~prod:"%.mlpack" ml_rule;
      rule "compute local includes" ~prod:"%" ~insert:(`top) visible_rule
   | _ -> ()
