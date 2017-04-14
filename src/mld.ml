@@ -27,24 +27,6 @@ let rec scan4ptag ptag path =
         |> failwith
   in
   List.fold_right aux (path |> tags_of_pathname |> Tags.elements) []
-
-let rec guess maindir path accu =
-  (* print_endline("Guessing "^path); *)
-  if Pathname.is_prefix path maindir
-  then ((* print_endline("Guessing module name is: "^accu); *)
-    accu)
-  else
-    let base = Pathname.add_extension "mld" (Pathname.remove_extension path) in
-    let parent = parent_dir path in
-    (* print_endline("Base is "^base); *)
-    (* print_endline("Parent is "^parent); *)
-    let accu =
-      if Pathname.exists base
-      then ((* print_endline("adding "^module_name_of_pathname path); *)
-        (module_name_of_pathname path)^"."^accu)
-      else accu
-    in
-    guess maindir parent accu  
                                        
 let mk_visible dirlist dir =
   let dirlist = List.sort_uniq String.compare (dirlist@Pathname.include_dirs_of dir) in
@@ -56,20 +38,28 @@ let mk_all_visible inherited dirlist =
 let ml_rule env build =
   try
     let ml = env "%.mlpack" and mld = env "%.mld" in
-    let main_dir = parent_dir !Options.build_dir in
-    let orig_mld = concat main_dir mld in
+    let main_dir   = parent_dir !Options.build_dir in
+    let orig_mld   = concat main_dir mld in
+    let here       = Pathname.dirname mld in
+    let thismodule = module_name_of_pathname mld in
+
     if not(Pathname.exists orig_mld)
     then raise Ocamlbuild_pack.Rule.Failed;
 
     let dir,packs =
       if Pathname.is_directory orig_mld
-      then mld,
-           [guess main_dir (parent_dir orig_mld) (module_name_of_pathname orig_mld)]
+      then mld, []
       else Pathname.remove_extension mld,
            string_list_of_file orig_mld
     in
-    let here = Pathname.dirname mld in
-    
+    let packs = packs@(scan4ptag "for-pack" mld) in
+    let packs = match packs with
+      | [] -> [thismodule]
+      | _  -> List.map
+                (fun sofar -> sofar^"."^thismodule)
+                packs
+    in
+
     let rec treat_dir subdir (accu,deps,ctx) =
       let relpath  = concat here subdir in
       let fullpath = concat main_dir relpath in
@@ -93,7 +83,10 @@ let ml_rule env build =
            if check "mld" then Pathname.add_extension "mlpack" base
            else relpath
          in
-         let pack_aux pack sofar = A"-for-pack"::A pack::sofar in
+         let pack_aux pack sofar =
+           tag_file relpath ["for-pack("^pack^")"];
+           A"-for-pack"::A pack::sofar
+         in
          let pack_command = S(List.fold_right pack_aux packs []) in
          flag ["ocaml"; "compile"; "file:"^cmx] & pack_command;
          flag ["ocaml"; "compile"; "file:"^cmo] & pack_command;
