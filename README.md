@@ -80,11 +80,15 @@ to have the same effect as above.
 ### Usage:
 
 The dispatch function `Mld.dispatch` should be called by myocamlbuild.ml with a line like
-```let () = Ocamlbuild_plugin.dispatch Mld.dispatch```
+```
+let () = Ocamlbuild_plugin.dispatch Mld.dispatch
+```
 or if you already have another dispatch function (provided by e.g. oasis)
-```let () = Ocamlbuild_plugin.dispatch
+```
+let () = Ocamlbuild_plugin.dispatch
              (MyOCamlbuildBase.dispatch_combine
-                 [ other_dispatch ; Mld.dispatch ])```
+                 [ other_dispatch ; Mld.dispatch ])
+```
 
 Then when calling ocamlbuild, you need to indicate that Findlib's package mld should be used, e.g.
 ```
