@@ -7,13 +7,15 @@ The contents of bar.mld will then be used to determine the submodules of Foo.Bar
 Hence, the following source tree
 
 ```
--src
- |-foo.mld
-   |-a
-   | |-bar.mld
+-src/
+ |-foo.mld/
+   |-a/
+   | |-bar.mld/
    | | |-b.ml
-   | |-c
+   | |
+   | |-c/
    |   |-d.ml
+   |
    |-e.ml
 ```
 
@@ -23,13 +25,13 @@ will turn into the following module structure
 -Foo
  |-Bar
  | |-B
+ |
  |-D
  |-E
 ```
 
 In the background: an mlpack is automatically generated for each directory *.mld, and the -for-pack options are automatically generated.
 
--------
 ### Directory visibility:
 
 All directories scanned for Foo's contents (i.e. src/foo.mld, src/foo.mld/a, src/foo.mld/a/c) can see each other, as if they were flattened.
@@ -56,7 +58,6 @@ in the _tags file
 makes Ocamlbuild's unused tag detection mechanism for tag1, tag2, and tag3, finally shut up.
 No more warnings of this kind when you know what you are doing.
 
--------
 ### Installation:
 
 This is a standard oasis-managed library:
@@ -74,7 +75,6 @@ opam install mld
 ```
 to have the same effect as above.
 
--------
 ### Usage:
 
 There is only one function visible in the library: Mld.dispatch,
@@ -103,7 +103,6 @@ AlphaFeatures:          ocamlbuild_more_args
 XOCamlbuildPluginTags:  package(mld)
 ```
 
--------
 ### License
 
-This package is distributed under the terms of the [CeCIll-C License] (http://www.cecill.info/licences/Licence_CeCILL-C_V1-en.html).
+This package is distributed under the terms of the [CeCIll-C License](http://www.cecill.info/licences/Licence_CeCILL-C_V1-en.html).
