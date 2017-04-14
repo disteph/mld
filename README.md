@@ -53,14 +53,14 @@ by the use of a new Ocamlbuild tag:
 <target_dir.mld> : blind
 ```
 in Ocamlbuild's `_tags` file would prevent the contents of `target_dir.mld` to inherit the visibility of the directory where `target_dir.mld` sits.
-Here, `<src/foo.mld/a/bar.mld> : blind` in the `_tags` file would prevent `B` from referring to `D` and `E`.
+Here, `<src/foo.mld/a/bar.mld> : blind` in the `_tags` file would prevent `B` from referring to its uncles and aunts `D` and `E`.
 
 
 
 ### Other tagging possibilities added to ocamlbuild's
 
 The plugin offers two new tags to be used in ocamlbuild:
-`visible(directory_path)` and `invisible(directory_path)`
+`visible(directory_path)` and `invisible(directory_path)`.
 
 For instance in ocamlbuild's `_tags` file one can write
 ```
@@ -118,7 +118,7 @@ let () = Ocamlbuild_plugin.dispatch
 
 Then when calling ocamlbuild, you need to indicate that Findlib's package `mld` should be used, e.g.
 ```
-ocamlbuild -use-ocamlfind  -plugin-tags 'package(mld)' ...
+ocamlbuild -use-ocamlfind -plugin-tags 'package(mld)' ...
 ```
 
 With oasis, you need something like
