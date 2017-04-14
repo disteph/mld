@@ -40,6 +40,8 @@ On the other hand they cannot see the contents of bar.mld: module B will be unkn
 In the other direction, directory bar.mld inherits the visibility of the upper group, so that B can refer to D and E (if it refers to Bar, a circularity would be detected).
 Likewise, all of the directories inherit the visibility of src, so that all of the modules mentioned here can refer to the brothers of Foo available in directory src.
 
+### New tag possibilities in ocamlbuild:
+
 The plugin offers a new tag to be used in ocamlbuild: visible(directory_path)
 
 For instance in ocamlbuild's _tags file one can write
@@ -77,17 +79,12 @@ to have the same effect as above.
 
 ### Usage:
 
-There is only one function visible in the library: Mld.dispatch,
-which should be called by myocamlbuild.ml with a line like
-```
-let () = Ocamlbuild_plugin.dispatch Mld.dispatch
-```
+The dispatch function `Mld.dispatch` should be called by myocamlbuild.ml with a line like
+```let () = Ocamlbuild_plugin.dispatch Mld.dispatch```
 or if you already have another dispatch function (provided by e.g. oasis)
-```
-let () = Ocamlbuild_plugin.dispatch
+```let () = Ocamlbuild_plugin.dispatch
              (MyOCamlbuildBase.dispatch_combine
-                 [ other_dispatch ; Mld.dispatch ])
-```
+                 [ other_dispatch ; Mld.dispatch ])```
 
 Then when calling ocamlbuild, you need to indicate that Findlib's package mld should be used, e.g.
 ```
@@ -105,4 +102,4 @@ XOCamlbuildPluginTags:  package(mld)
 
 ### License
 
-This package is distributed under the terms of the [CeCIll-C License](http://www.cecill.info/licences/Licence_CeCILL-C_V1-en.html).
+This package is distributed under the terms of the [CeCILL-C License](http://www.cecill.info/licences/Licence_CeCILL-C_V1-en.html).
