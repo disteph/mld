@@ -3,6 +3,7 @@ name: "MLD"
 version: "0.1"
 maintainer: "Stephane Graham-Lengrand <graham-lengrand@lix.polytechnique.fr>"
 authors: [ "Stephane Graham-Lengrand <graham-lengrand@lix.polytechnique.fr>" ]
+homepage: "https://github.com/disteph/mld"
 license: "CeCILL-C"
 build: [
   ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
