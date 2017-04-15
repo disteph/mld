@@ -97,11 +97,10 @@ ocaml setup.ml -install
 ```
 will install the library with findlib
 
-Hopefully soon, I will register the package with opam, so that one can directly type
+You can also install the versions registered with the opam package manager, directly typing
 ```
 opam install mld
 ```
-to have the same effect as above.
 
 ### Usage
 
