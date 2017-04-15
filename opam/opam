@@ -1,5 +1,5 @@
 opam-version: "1.2"
-name: "MLD"
+name: "mld"
 version: "0.1"
 maintainer: "Stephane Graham-Lengrand <graham-lengrand@lix.polytechnique.fr>"
 authors: [ "Stephane Graham-Lengrand <graham-lengrand@lix.polytechnique.fr>" ]
