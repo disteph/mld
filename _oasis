@@ -1,6 +1,6 @@
 OASISFormat: 0.4
 Name:        mld
-Version: 0.1
+Version: 0.2
 Synopsis: The MLD package makes directory foo.mld turn into module Foo
 Authors: Stephane Graham-Lengrand
 License:     CeCILL-C

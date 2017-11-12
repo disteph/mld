@@ -6,6 +6,7 @@ down to other directories of the form `bar.mld`:
 The contents of `bar.mld` will then be used to determine the submodules of `Foo.Bar`.
 Hence, the following source tree
 
+```
 -src/
  |-foo.mld/
    |-a/
@@ -16,15 +17,18 @@ Hence, the following source tree
    |   |-d.ml
    |
    |-e.ml
+```
 
 will turn into the following module structure
 
+```
 -Foo
  |-Bar
  | |-B
  |
  |-D
  |-E
+```
 
 In the background:
 an mlpack is automatically generated for each directory *.mld, and the `-for-pack` options are automatically generated.
