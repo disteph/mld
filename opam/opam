@@ -1,26 +1,24 @@
-opam-version: "1.2"
+opam-version: "2.0"
 name: "mld"
 version: "0.2"
 maintainer: "Stephane Graham-Lengrand <graham-lengrand@lix.polytechnique.fr>"
-authors: [ "Stephane Graham-Lengrand <graham-lengrand@lix.polytechnique.fr>" ]
+authors: "Stephane Graham-Lengrand <graham-lengrand@lix.polytechnique.fr>"
+license: "CeCILL-C"
 homepage: "https://github.com/disteph/mld"
 bug-reports: "https://github.com/disteph/mld/issues"
-dev-repo: "https://github.com/disteph/mld.git"
-license: "CeCILL-C"
+depends: [
+  "ocaml" {>= "4.02"}
+  "oasis"
+  (("ocamlbuild" {>= "0.9.0"}) & ("ocamlbuild" {<= "0.12.0"})) |
+  "ocamlbuild" {= "0"}
+  "ocamlfind" {build}
+]
+flags: light-uninstall
 build: [
   ["oasis" "setup"]
   ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
   ["ocaml" "setup.ml" "-build"]
 ]
 install: ["ocaml" "setup.ml" "-install"]
-remove: [
-  ["ocamlfind" "remove" "mld"]
-]
-depends: [
-  "oasis"
-  ((("ocamlbuild" {>= "0.9.0"}) & ("ocamlbuild" {<= "0.12.0"})) | "ocamlbuild" {= "0"})
-  "ocamlfind" {build}
-]
-available: [
-    ocaml-version >= "4.02"
-]
+remove: ["ocamlfind" "remove" "mld"]
+dev-repo: "git+https://github.com/disteph/mld.git"
